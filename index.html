@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dünya Güzeli Testi 💖</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9ecb, #ffb6c1);
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+    }
+
+    h1 {
+      color: #7a004b;
+      font-size: 1.6rem;
+      text-align: center;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 8px rgba(255,255,255,0.7);
+      z-index: 2;
+      transition: opacity 1s ease;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      z-index: 2;
+      transition: opacity 1s ease;
+    }
+
+    button {
+      width: 240px;
+      background-color: #fff;
+      border: none;
+      color: #ff1493;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 14px 24px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    button:hover {
+      background-color: #ff69b4;
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Arka plan kalp yağmuru */
+    .heart {
+      position: fixed;
+      width: 15px;
+      height: 15px;
+      background: #ff66b2;
+      transform: rotate(45deg);
+      animation: float 6s linear infinite;
+      bottom: -10px;
+      opacity: 0.7;
+      z-index: 0;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #ff66b2;
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -7.5px; left: 0; }
+    .heart::after { top: 0; left: -7.5px; }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(-110vh) rotate(45deg); opacity: 0; }
+    }
+
+    /* Kalp popup */
+    .heart-popup {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 220px;
+      height: 220px;
+      background-color: #ff3385;
+      transform-origin: center;
+      animation: heartGrow 1.5s ease forwards;
+      z-index: 5;
+      box-shadow: 0 0 20px 10px rgba(255, 105, 180, 0.5);
+    }
+
+    .heart-popup::before,
+    .heart-popup::after {
+      content: '';
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background-color: #ff3385;
+      border-radius: 50%;
+    }
+
+    .heart-popup::before { top: -110px; left: 0; }
+    .heart-popup::after { top: 0; left: -110px; }
+
+    @keyframes heartGrow {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .heart-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      text-align: center;
+      width: 160px;
+      font-size: 1rem;
+      font-weight: 600;
+      z-index: 10;
+      opacity: 0;
+      animation: textFade 1s ease 1.5s forwards;
+    }
+
+    @keyframes textFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Parlayan küçük kalpler */
+    .burst-heart {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #ff5ca9;
+      transform: rotate(45deg);
+      opacity: 0;
+      animation: burst 1.2s ease-out forwards;
+      z-index: 20;
+    }
+
+    .burst-heart::before,
+    .burst-heart::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #ff5ca9;
+      border-radius: 50%;
+    }
+
+    .burst-heart::before { top: -6px; left: 0; }
+    .burst-heart::after { top: 0; left: -6px; }
+
+    @keyframes burst {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(1.5); opacity: 0; }
+    }
+
+    @media (max-width: 600px) {
+      button {
+        width: 80%;
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+      h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="question">Dünya güzeli olmak nasıl bir duygu?<br>Vergisini ödüyor musunuz?</h1>
+
+  <div class="btn-container" id="buttons">
+    <button id="yesBtn">Evet, ödüyorum :)</button>
+    <button id="noBtn">Hayır, ben dünya güzeli değilim ki aq</button>
+  </div>
+
+  <script>
+    // Kalp yağmuru
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }
+    setInterval(createHeart, 300);
+
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const question = document.getElementById("question");
+    const buttons = document.getElementById("buttons");
+
+    // Kaçan buton (mobil + masaüstü)
+    function moveButton() {
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 100);
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    noBtn.addEventListener("mouseenter", moveButton);
+    noBtn.addEventListener("click", moveButton);
+    noBtn.addEventListener("touchstart", moveButton);
+
+    // Kalp patlaması efekti
+    function burstHearts() {
+      for (let i = 0; i < 12; i++) {
+        const burst = document.createElement('div');
+        burst.classList.add('burst-heart');
+        burst.style.left = '50%';
+        burst.style.top = '50%';
+        const angle = (Math.PI * 2 * i) / 12;
+        const distance = 100;
+        burst.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+        burst.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+        document.body.appendChild(burst);
+        setTimeout(() => burst.remove(), 1200);
+      }
+    }
+
+    // Evet butonu
+    yesBtn.addEventListener("click", () => {
+      question.style.opacity = "0";
+      buttons.style.opacity = "0";
+      setTimeout(() => {
+        question.style.display = "none";
+        buttons.style.display = "none";
+
+        // Kalp popup oluştur
+        const heart = document.createElement('div');
+        heart.classList.add('heart-popup');
+        document.body.appendChild(heart);
+
+        // Parlayan küçük kalpler saç
+        burstHearts();
+
+        // Yazıyı ekle
+        const text = document.createElement('div');
+        text.classList.add('heart-text');
+        text.innerHTML = "Dünyayı kaç yıldır güzelliğiniz ile şereflendiriyorsunuz hanımefendi?<br>Malum, zor olsa gerek 💐";
+        document.body.appendChild(text);
+
+        // 5 saniye sonra Reels'e yönlendir
+        setTimeout(() => {
+          window.location.href = "https://www.instagram.com/p/DLkR4FUI0V-/";
+        }, 5000);
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
